@@ -1,5 +1,5 @@
 /*
- * @(#)JdbcDataSource.java	May 18, 2010
+ * @(#)JdbcDataSource.java	2011-08-06
  *
  * Copyright (c) 2010 by gerald. All Rights Reserved.
  */
@@ -11,9 +11,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
+
 import com.github.javaclub.jorm.Environment;
 import com.github.javaclub.jorm.config.JdbcConfigXmlParser;
-import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
 
 /**
  * A custom jdbc datasource that implements <code>javax.sql.DataSource</code>
@@ -21,14 +23,12 @@ import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
  * @author <a href="mailto:gerald.chen@qq.com">Gerald Chen</a>
  * @version $Id: JdbcDataSource.java 217 2011-08-06 14:06:47Z gerald.chen.hz@gmail.com $
  */
-public class JdbcDataSource extends AbstractDriverBasedDataSource {
+public class JdbcDataSource extends AbstractDriverBasedDataSource implements InitializingBean {
 	
 	public JdbcDataSource() {
-		super();
-		initialize();
 	}
-
-	protected void initialize() {
+	
+	public void afterPropertiesSet() throws Exception {
 		String defaultConnectionName = JdbcConfigXmlParser.getDefaultConnectionName();
 		Properties jdbcPropertity = JdbcConfigXmlParser.getJdbcPropertity(defaultConnectionName);
 		jdbcPropertity.setProperty(Environment.PROVIDER, defaultConnectionName);
