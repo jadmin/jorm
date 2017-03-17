@@ -45,7 +45,6 @@ import com.github.javaclub.jorm.jdbc.work.internal.AssociatedLoadingWork;
  *
  * 
  */
-@SuppressWarnings("unchecked")
 public class BeanPersister {
     
     /**

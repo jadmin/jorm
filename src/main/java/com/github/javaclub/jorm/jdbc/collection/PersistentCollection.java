@@ -15,21 +15,41 @@ import com.github.javaclub.jorm.jdbc.JdbcException;
  * Applications should never use classes in this package directly, unless extending the "framework" here.
  *
  * @author <a href="mailto:gerald.chen.hz@gmail.com">Gerald Chen</a>
- * @version $Id: PersistentCollection.java 2011-9-19 上午10:49:10 Exp $
+ * @version $Id: PersistentCollection.java 2011-9-19 10:49:10 Exp $
  */
 public interface PersistentCollection {
 	
+	/**
+	 * If has next element
+	 *
+	 * @return if has next element return true,otherwise false
+	 */
 	boolean hasNext();
 
+    /**
+     * Return the next element
+     *
+     * @return one persit object
+     */
     Object next();
     
 	/**
-	 * Get all the associated elements.
+	 * Get all the associated elements of current query.
 	 *
 	 * @return all elements that can be loaded.
 	 * @throws JdbcException
 	 */
 	public <T> Collection<T> presentAll() throws JdbcException;
+	
+	/**
+	 * Get elements(num=limit) from the start
+	 *
+	 * @param start from the start
+	 * @param limit countNumber
+	 * @return Get elements(num=limit) from the start
+	 * @throws JdbcException
+	 */
+	public <T> Collection<T> presentLimit(int start, int limit) throws JdbcException;
 	
 	/**
 	 * Get the owning entity. Note that the owner is only

@@ -7,12 +7,14 @@
 
 package com.github.javaclub.jorm.mysql.one2many;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.javaclub.jorm.Jorm;
+import com.github.javaclub.jorm.Page;
 import com.github.javaclub.jorm.Session;
 import com.github.javaclub.jorm.common.DateTime;
 import com.github.javaclub.jorm.common.Numbers;
@@ -71,10 +73,28 @@ public class ManyToOneTest {
 		Category category = null;
 		category = session.read(Category.class, 1);;
 		List<Book> list = category.getBooks();
+		System.out.println("size=" + list.size());
 		PersistentCollection pc = (PersistentCollection) list;
-		if(pc.hasNext()) {
+		System.out.println("totalBooks=" + pc.count());
+		while(pc.hasNext()) {
 			Book bk = (Book) pc.next();
 			System.out.println(bk);
+			System.out.println("category=" + bk.getCategory());
+		}
+	}
+	
+	@Test
+	public void testGetMany1() {
+		Category category = null;
+		category = session.read(Category.class, 1);;
+		List<Book> list = category.getBooks();
+		PersistentCollection pc = (PersistentCollection) list;
+		long count = pc.count();
+		int pages = (int) (count % 10 > 0 ? (count/10 + 1) : count/10);
+		for (int i = 1; i <= pages; i++) {
+			Collection page = pc.presentLimit(10*(i - 1), 10);
+			System.out.println("page-" + i + " => " + page.size());
+			System.out.println("-----------------------");
 		}
 	}
 	

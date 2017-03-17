@@ -60,7 +60,9 @@ public class SqlParams<T> implements Serializable {
 	/** 排序 */
 	private Set<Order> orders = new HashSet<Order>();
 	
-	/** 是否加载关联对象 default value => <code>true</code> */
+	/**
+	 * 是否加载关联对象，默认加载
+	 */
 	private boolean loadAssociated = true;
 	
 	public SqlParams() {

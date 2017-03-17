@@ -30,9 +30,8 @@ import com.github.javaclub.jorm.jdbc.work.AbstractStepWork;
  * AssociatedLoadingWork
  *
  * @author <a href="mailto:gerald.chen.hz@gmail.com">Gerald Chen</a>
- * @version $Id: AssociatedLoadingWork.java 2011-9-16 上午11:08:37 Exp $
+ * @version $Id: AssociatedLoadingWork.java 2011-9-16 11:08:37 Exp $
  */
-@SuppressWarnings("unchecked")
 public class AssociatedLoadingWork extends AbstractStepWork {
 	
 	private Object target;
@@ -80,9 +79,9 @@ public class AssociatedLoadingWork extends AbstractStepWork {
 			for (Field field : metadata.OneToManyFields) {
 				manyType = field.getType();
 				if(manyType == List.class) {
-					value = new PersistentList(session, target, field.getAnnotation(OneToMany.class).type());
+					value = new PersistentList(session, target, field.getAnnotation(OneToMany.class).type()).setNestedLoad(false).build();
 				} else if(manyType == Set.class) {
-					value = new PersistentSet(session, target, field.getAnnotation(OneToMany.class).type());
+					value = new PersistentSet(session, target, field.getAnnotation(OneToMany.class).type()).setNestedLoad(false).build();
 				}
 				Reflections.setFieldValue(target, field, value);
 			}
@@ -94,8 +93,6 @@ public class AssociatedLoadingWork extends AbstractStepWork {
 			for (Field field : metadata.ManyToOneFields) {
 				params = AnnotationModelHelper.getSpecifiedFieldValues(target, 
 								field.getAnnotation(ManyToOne.class).ownerField());
-				/*sqlParams = RelationHelper.querySql(field.getType(), 
-								params, field.getAnnotation(ManyToOne.class).selField());*/
 				sqlParams = SqlPrepared.preparedSelect(field.getType(), 
 								field.getAnnotation(ManyToOne.class).selField(), params);
 				sqlParams.setLoadAssociated(false);// 避免循环加载
@@ -112,7 +109,7 @@ public class AssociatedLoadingWork extends AbstractStepWork {
 			for (Field field : metadata.ManyToManyFields) {
 				manyType = field.getType();
 				if(manyType == List.class) {
-					value = new PersistentList(session, target, field.getAnnotation(ManyToMany.class).type());
+					value = new PersistentList(session, target, field.getAnnotation(ManyToMany.class).type()).build();
 				} else if(manyType == Set.class) {
 					value = new PersistentSet(session, target, field.getAnnotation(ManyToMany.class).type());
 				}

@@ -36,9 +36,8 @@ import com.github.javaclub.jorm.proxy.LazyInitializationException;
  * Base class implementing {@link PersistentCollection}
  *
  * @author <a href="mailto:gerald.chen.hz@gmail.com">Gerald Chen</a>
- * @version $Id: AbstractPersistentCollection.java 2011-9-19 下午01:16:38 Exp $
+ * @version $Id: AbstractPersistentCollection.java 2011-9-19 13:16:38 Exp $
  */
-@SuppressWarnings("unchecked")
 public abstract class AbstractPersistentCollection implements Serializable, PersistentCollection {
 
 	private static final long serialVersionUID = 1L;
@@ -48,6 +47,8 @@ public abstract class AbstractPersistentCollection implements Serializable, Pers
 	private transient Session session;
 	private boolean initialized;
 	private transient boolean initializing;
+	
+	protected boolean nestedLoad = true;
 	
 	private Object owner;
 	private Class persistentClass;
@@ -64,7 +65,7 @@ public abstract class AbstractPersistentCollection implements Serializable, Pers
 				: JdbcConfigXmlParser.constant("collection.holding_size").intValue();
 
 	/**
-	 * Not called by Hibernate, but used by non-JDK serialization,
+	 * Not called by Framework, but used by non-JDK serialization,
 	 * eg. SOAP libraries.
 	 */
 	public AbstractPersistentCollection() {	}
@@ -74,6 +75,10 @@ public abstract class AbstractPersistentCollection implements Serializable, Pers
 		this.owner = owner;
 		this.persistentClass = persistentClass;
 		this.total = this.getTotalSize();
+	}
+	
+	public boolean isNestedLoad() {
+		return nestedLoad;
 	}
 
 	public final void clearDirty() {
@@ -168,6 +173,10 @@ public abstract class AbstractPersistentCollection implements Serializable, Pers
 		return this.fetchCollection(-1, -1);
 	}
 	
+	public <T> Collection<T> presentLimit(int start, int limit) throws JdbcException {
+		return this.fetchCollection(start, limit);
+	}
+
 	protected long getTotalSize() {
 		SqlParams params = prepareSqlParams(-1, -1);
 		try {
@@ -179,6 +188,9 @@ public abstract class AbstractPersistentCollection implements Serializable, Pers
 	
 	protected <T> Collection<T> fetchCollection(int start, int limit) {
 		SqlParams params = prepareSqlParams(start, limit);
+		if(!isNestedLoad()) {
+			params.setLoadAssociated(false);
+		}
 		try {
 			if(LOG.isInfoEnabled()) {
 				LOG.info("Fetch collection start => " + start + ", limit => " + limit);

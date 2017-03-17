@@ -55,7 +55,7 @@ public class SqlPrepared {
 		}
 		String tbname = ClassMetadata.getClassMetadata(clazz).tableName;
 		final String sql = "SELECT * FROM " + tbname + " WHERE " + AnnotationModelHelper.renderWhereFragment(clazz, fieldNames);
-		return new SqlParams<T>(sql, fieldValues);
+		return new SqlParams<T>(sql, fieldValues).setLoadAssociated(ClassMetadata.getClassMetadata(clazz).loadAssociated);
 	}
 	
 	/**

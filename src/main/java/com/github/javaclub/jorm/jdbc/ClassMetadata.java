@@ -53,6 +53,8 @@ public class ClassMetadata {
 	public boolean hasLazyField = false;
 	public boolean isLazyEntity = false;
 	
+	public boolean loadAssociated = false;
+	
 	public Field identifierField;
 	public Method getIdentifierMethod;
 	public Method setIdentifierMethod;
@@ -257,8 +259,9 @@ public class ClassMetadata {
 	private String processClassAnnotation(Class<?> clazz) {
 		tableName = AnnotationModelHelper.getTableName(clazz);
 		Entity entity = Annotations.findAnnotation(clazz, Entity.class);
-		if(null != entity && entity.lazy()) {
-			isLazyEntity = true;
+		if(null != entity) {
+			isLazyEntity = entity.lazy();
+			loadAssociated = entity.loadAssociated();
 		}
 		PK pk = Annotations.findAnnotation(clazz, PK.class);
 		String pkFieldNamesJoin = "";

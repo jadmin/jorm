@@ -20,9 +20,8 @@ import com.github.javaclub.jorm.Session;
  *
  * @see java.util.ArrayList
  * @author <a href="mailto:gerald.chen.hz@gmail.com">Gerald Chen</a>
- * @version $Id: PersistentList.java 2011-9-19 下午02:47:18 Exp $
+ * @version $Id: PersistentList.java 2011-9-19 14:47:18 Exp $
  */
-@SuppressWarnings("unchecked")
 public class PersistentList extends AbstractPersistentCollection implements java.util.List {
 
 	private static final long serialVersionUID = 9169693249257346989L;
@@ -33,9 +32,18 @@ public class PersistentList extends AbstractPersistentCollection implements java
 	
 	public PersistentList(Session session, Object owner, Class persistentClass) {
 		super(owner, persistentClass);
-		this.list = (List) fetchCollection(0, getHoldingSize());
+	}
+	
+	public PersistentList setNestedLoad(boolean nestedLoad) {
+		this.nestedLoad = nestedLoad;
+		return this;
 	}
 
+	public PersistentList build() {
+		this.list = (List) fetchCollection(0, getHoldingSize());
+		return this;
+	}
+	
 	public long count() {
 		return total;
 	}

@@ -11,6 +11,8 @@ import com.github.javaclub.jorm.DataTools;
 import com.github.javaclub.jorm.Jorm;
 import com.github.javaclub.jorm.Session;
 import com.github.javaclub.jorm.common.Strings;
+import com.github.javaclub.jorm.jdbc.JdbcException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,9 +47,9 @@ public class OneToOneTest {
 	}
 	
 	@Test
-	public void get_1() {
-		Idcard card = session.read(Idcard.class, 1);
-		System.out.println(card);
+	public void testGetIdCardByLazy() {
+		Idcard card = session.read(Idcard.class, 1); // 该行执行完，不会真正的执行sql查询
+		System.out.println(card); // 访问的时候才会去查DB
 		Person p = card.getPerson();
 		System.out.println(p);
 		System.out.println(p.getIdcard());
@@ -90,7 +92,7 @@ public class OneToOneTest {
 		session.save(idcard);
 	}
 	
-	@Test
+	@Test(expected=JdbcException.class)
 	public void save_3() {
 		session.delete(Idcard.class, "id > 8");
 		session.delete(Person.class, "identity_number NOT IN ('421121198508312016', '421121198508312017', '321121198605282016')");

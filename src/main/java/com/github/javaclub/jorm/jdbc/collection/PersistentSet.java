@@ -22,9 +22,8 @@ import com.github.javaclub.jorm.common.CommonUtil;
  *
  * @see java.util.HashSet
  * @author <a href="mailto:gerald.chen.hz@gmail.com">Gerald Chen</a>
- * @version $Id: PersistentSet.java 2011-9-19 下午02:54:48 Exp $
+ * @version $Id: PersistentSet.java 2011-9-19 14:54:48 Exp $
  */
-@SuppressWarnings("unchecked")
 public class PersistentSet extends AbstractPersistentCollection implements java.util.Set {
 	
 	private static final long serialVersionUID = -3473332871716667059L;
@@ -38,10 +37,24 @@ public class PersistentSet extends AbstractPersistentCollection implements java.
 	
 	public PersistentSet(Session session, Object owner, Class persistentClass) {
 		super(owner, persistentClass);
+	}
+	
+	public PersistentSet setNestedLoad(boolean nestedLoad) {
+		this.nestedLoad = nestedLoad;
+		return this;
+	}
+
+	public PersistentSet build() {
+		
 		this.set = new HashSet();
 		tempList = (List) fetchCollection(0, getHoldingSize());
-		this.set.addAll(tempList);
-		tempList = null;
+		try {
+			this.set.addAll(tempList);
+		} finally {
+			tempList = null;;
+		}
+		
+		return this;
 	}
 
 	public long count() {
