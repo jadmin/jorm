@@ -23,7 +23,8 @@ import org.springframework.test.context.ContextConfiguration;
  * @author <a href="mailto:gerald.chen@qq.com">Gerald Chen</a>
  * @version $Id: JsessionSpringTest.java 1319 2012-01-10 12:47:26Z gerald.chen.hz $
  */
-@ContextConfiguration(locations = { "/conf/context/applicationContext.xml" })
+//@ContextConfiguration(locations = { "/conf/context/applicationContext.xml" }) // 指定当前classpath下路径
+@ContextConfiguration(locations = { "applicationContext.xml" }) // 当前目录下找配置文件
 public class JsessionSpringTest extends SpringContextTestCase {
 
 	@Test
